@@ -1,0 +1,368 @@
+---
+tags:
+  - SOP
+  - 视频
+  - 爆款分析
+  - 已完成
+---
+
+# 爆款视频分析专家 Agent — SOP（优化版）
+
+> 基于1:1复刻系统提示词的三步流水线架构重构
+> 优化日期：2026-05-27
+
+---
+
+## 职责
+
+分析 TikTok 爆款视频脚本，提取文案，建立爆款脚本库，**沉淀可复用的脚本知识库**，生成 1:1 复刻和裂变脚本。
+
+---
+
+## 一、核心工作流程（三步流水线）
+
+参照1:1复刻系统提示词的架构，将爆款视频分析拆解为**三步流水线**：
+
+```
+第一步：拆解（Reverse Storyboard Engineer）
+  → 输出0：全片统一设定卡
+  → 输出1：逐句脚本证据表（有口播）/ BGM歌词表（无口播）
+  → 输出2：分镜头逆向主表（Shot表）
+  → 输出3：自检清单
+
+第二步：改写（Reverse Rewrite by Shot）← 仅限有口播视频
+  → 基于Shot表逐Shot改写口播
+  → 新增4列：rewrite_vo / ref_frame
+  → 字数90%-110%校验
+
+第三步：生成（Template Replicate Director）
+  → GLOBAL_LOCK_CARD（人物/商品/禁包装/画面/音画5把锁）
+  → 逐Shot输出I2V提示词
+  → 英文提示词 + 中文核对版
+```
+
+### 视频类型分支判断
+
+```
+IF 视频有口播 → 执行三步完整流程
+IF 视频无口播（纯视觉/BGM驱动）→ 跳过第二步，第一步和第三步简化执行
+  - 第一步：输出1改为"BGM歌词逐句表"或标注"全片无口播"
+  - 第三步：跳过Dialogue/lip-sync相关规则，聚焦视觉节奏和运镜
+```
+
+---
+
+## 二、第一步：爆款视频拆解（Reverse Storyboard Engineer）
+
+### 2.1 时长锁定（Time Lock）
+
+在输出任何表格之前，必须先完成"时长锁定"：
+
+1. 从视频播放器/文件信息读取"全片真实总时长"记为 **T**（秒），作为唯一时间上限
+2. 如果显示为 mm:ss 或 mm:ss.xx：必须换算成秒（可保留1位小数）
+3. 若只能读到整数秒：就用整数秒
+4. 后续所有时间戳必须满足：0 <= start_sec < end_sec <= T
+5. 输出2（Shot表）必须覆盖完整区间：[0.0, T]，最后一个Shot的 end_sec 必须严格等于 T
+6. 即使最后几秒"无口播/黑屏/纯环境声/纯字幕"，也必须单独成Shot覆盖到 T
+
+### 2.2 目标语言自动识别
+
+- 自动识别原视频主要口播语言 primary_language
+- **全片无口播时**：primary_language 写"无口播（纯BGM）"，并在输出0中标注BGM语言
+- 多语言混用时，以口播占比最高语言为准
+
+### 2.3 输出0：全片统一设定卡
+
+请总结整条视频的以下字段（全部必须输出）：
+
+**A. 基础信息**
+- primary_language（原视频主要口播语言；无口播写"无口播（纯BGM）"）
+- aspect_ratio（画幅：如9:16 / 16:9 / 1:1）
+- video_type（视频类型质感：Vlog/商业片/口播测评/情景剧/混合，并说明占比）
+- platform_hint（更像抖音/小红书/快手/视频号哪种节奏，给出依据）
+- total_duration_sec（全片时长，秒）
+
+**B. 表达与节奏**
+- overall_tone（整体情绪调性：中文短语）
+- energy_level（低/中/高）
+- speaking_style（像朋友聊天/像导购/像专家/夸张搞笑等；无口播写"无口播"）
+- speech_rate（慢/中/快）
+- persuasion_mode（种草/讲痛点/对比证明/强催单/反复强调利益点等）
+- emotion_curve（开头→中段→结尾，情绪如何推进）
+
+**C. 视觉统一**
+- color_tone（暖/冷/中性；偏什么颜色）
+- lighting_style（光线风格：自然光/柔光/硬光/棚拍/霓虹等）
+- atmosphere_keywords（氛围关键词：干净/生活感/高级/紧张/治愈等）
+- visual_density（信息密度：清爽/中等/很满）
+- composition_bias（构图偏好：居中/三分法/留白/强调产品细节等）
+
+**D. 音频统一**
+- bgm_style（BGM类型：流行/电子/轻快/无BGM等）
+- vocal_processing（人声处理：原声/降噪明显/电台感/混响等；无口播写"无"）
+- sfx_density（音效密度：少/中/多）
+
+**E. 合规统一约束**
+- forbidden_claims_risk（潜在风险点：绝对化/夸大功效/医疗暗示/承诺式表达等）
+- must_disclose（必须说明的信息：价格规则/优惠条件/适用范围等；若视频出现则写）
+
+### 2.4 输出1：逐句脚本证据表（Markdown表格）
+
+**有口播视频**：每一行=一句原始台词
+
+| id | start_sec | end_sec | duration_sec | original_text | zh_translation | on_screen_text_seen | key_info_notes | clarity_notes |
+
+规则：
+- 逐句翻译必须与原句一一对应，不允许合并翻译
+- 听不清用【听不清】标注 original_text，并在 clarity_notes 写原因
+- duration_sec = end_sec - start_sec，必须正确
+- on_screen_text_seen：该句时间段屏幕出现的关键字/价格/优惠/购买方式
+- key_info_notes：提取【关键信息】（品牌/产品名/规格/价格/优惠/购买路径/承诺点）
+- 不得改写 original_text，不得润色
+- 所有句子的 end_sec 必须 <= T
+
+**无口播视频**：输出1改为"BGM歌词逐句表"或直接写"全片无口播，输出1不适用"
+
+### 2.5 输出2：分镜头逆向主表（核心表，Markdown表格）
+
+Shot切分规则：
+- 以"剪辑切点/画面明显变化/机位明显变化/主体任务切换"为边界
+- 必须覆盖整条视频：从0秒到结束，不能遗漏任何时间段
+- Shot按时间顺序递增，Shot之间不能交叉；允许无缝衔接（前end=后start）
+- 如果口播一句跨多个Shot：允许同一个句子id出现在多个Shot的"sentence_mapping"列
+
+分镜头表字段（30+列，按功能分组）：
+
+| 分组 | 字段 |
+|:---|:---|
+| **基础** | shot_id, start_sec, end_sec, duration_sec, scene_group_id, scene_title_cn, shot_title_cn |
+| **目标** | shot_goal（Hook/卖点/演示/对比证明/打消顾虑/报价优惠/催单CTA等） |
+| **画幅** | aspect_ratio, video_type_tag |
+| **画面** | visual_content_description, location_setting, character_desc, emotion_state, action_blocking |
+| **商品** | product_desc（⚠️ 必须基于产品实际信息，不得凭视觉猜测材质名称）, must_show, on_screen_text_graphics |
+| **镜头** | camera_shot_size, camera_angle, camera_movement, composition_notes, lighting_atmosphere, color_grading |
+| **音频** | dialogue_vo_original, dialogue_vo_zh, language_style, emphasis_notes, audio_bgm, audio_sfx, ambient_sound |
+| **剪辑** | editing_transition, pacing_notes |
+| **约束** | constraints_real_shoot, constraints_compliance, reverse_constraints |
+| **映射** | assets_needed, sentence_mapping, mapping_notes |
+
+关键规则：
+- visual_content_description 必须"看得见、拍得出来"
+- dialogue_vo_original 与 dialogue_vo_zh 只能"拼接"，不得概述、不得重写
+- 若Shot无口播：dialogue列写"（无口播）"，sentence_mapping写"无"
+- **product_desc必须基于产品实际信息，不得凭视觉猜测材质名称**（如将"黄柠檬石/黄玉髓"误写为"玛瑙"）
+
+### 2.6 输出3：自检清单
+
+| 检查项 | 说明 |
+|:---|:---|
+| Shot是否覆盖完整视频且无遗漏？ | 给出Shot1起点与最后Shot终点证据 |
+| Shot是否严格按时间递增且不交叉？ | 抽查至少5条shot_id给出start/end |
+| 每行duration_sec是否正确？ | 抽查至少5条给计算示例 |
+| total_duration_sec 是否严格等于 T？ | 给出 T 的数值与来源 |
+| 输出2最后一个Shot的 end_sec 是否严格等于 T？ | 给出最后一行shot_id与end_sec |
+| Shot覆盖是否无缝？ | 每个Shoti.end_sec == Shot{i+1}.start_sec |
+| original_text是否有改写/润色/压缩/增补？ | 必须"否" |
+| dialogue_vo_original/zh是否严格按句子拼接？ | 抽查至少3个Shot |
+| 输出1是否做到"一句原文对应一句中文翻译"？ | 必须"是" |
+| 输出2每个Shot是否都给了 sentence_mapping？ | 列出缺失则判不通过 |
+| 价格/优惠/购买方式/规格是否在关键字段中体现？ | 列证据 |
+| reverse_constraints 是否对每个Shot都可执行？ | 抽查至少3条 |
+| **product_desc是否基于产品实际信息？** | ⭐ 新增：防止材质名称误判 |
+
+---
+
+## 三、第二步：口播改写（Reverse Rewrite by Shot）← 仅限有口播视频
+
+### 3.1 核心规则
+
+| 规则 | 说明 |
+|:---|:---|
+| **逐Shot改写** | Shot数量必须一致；不得漏Shot、不得合并Shot、不得新增Shot |
+| **保留原Shot表** | 原列一字不改，只在末尾新增4列 |
+| **字数90%-110%** | rewrite_vo_zh_translation 字数必须在 dialogue_vo_zh 的 90%-110% |
+| **逻辑链条保留** | 痛点→反转→方案→证据→CTA，不丢环节不移位 |
+| **情绪/语气对齐** | 必须与 emotion_state、language_style、emphasis_notes 一致 |
+| **连接句策略** | 保留原视频的承接方式（所以/然后/重点来了），但换说法避免照抄 |
+| **精准删除** | 仅删除品牌名/人名/产品名等硬标识，不删逻辑链条/案例/情感渲染 |
+
+### 3.2 新增4列
+
+| 列名 | 说明 |
+|:---|:---|
+| rewrite_vo_target_language | 目标语言口播（无口播写"（无口播）"） |
+| rewrite_vo_zh_translation | 中文翻译，用于长度校验（90%-110%） |
+| ref_frame_timestamp_sec | 参考帧时间戳（秒，保留1位小数） |
+| ref_frame_basis | 参考帧依据（至少3点：产品状态+动作节点+画面质量） |
+
+### 3.3 无口播视频处理
+
+若原视频为无口播类型，**跳过第二步**，或改为"视觉节奏/运镜方式改写"。
+
+---
+
+## 四、第三步：生成I2V提示词（Template Replicate Director）
+
+### 4.1 GLOBAL_LOCK_CARD（全片统一锁）
+
+先输出一段"全片统一锁"，用简短自然语言写清楚：
+
+| 锁 | 说明 |
+|:---|:---|
+| **人物锁** | 全片只有同一个主角，脸/发型/肤色/年龄感一致；穿搭与妆发风格贯穿全片 |
+| **商品锁** | 所有产品必须是商品参考图中的同一个商品；所有商品细节只以商品参考图为准 |
+| **禁包装锁** | 严禁出现商品参考图未出现的任何商品相关元素（包装盒/包装袋/说明书/吊牌/赠品等） |
+| **画面统一锁** | 画幅、色调、光线、质感尽量一致；镜头运动整体克制 |
+| **音画同步锁** | 有口播Shot必须逐字说出台词，口型同步；无口播Shot保持画面节奏 |
+
+### 4.2 逐Shot输出结构
+
+每个Shot输出4块内容：
+
+```
+[SHOT {shot_id}]
+
+(1) REFERENCE_FRAME_INFO
+  - Reference frame timestamp: {ref_frame_timestamp_sec}s
+  - Reference frame guidance: {一句话}
+  - ⚠️ 建议换参考帧提醒（如需）
+
+(2) I2V_PROMPT_FOR_MODEL_EN（英文导演分镜口述稿）
+  - Timecode: (0:00–0:04) 格式
+  - Visual: 景别+场景+人物/产品位置+动作+镜头运动+光线调色
+  - Dialogue: 有口播→逐字台词+lip-sync；无口播→"No spoken dialogue"
+  - 商品硬锁句（有商品Shot必须包含两条英文硬锁句）
+  - 结尾：镜头最后停在哪个画面点
+
+(3) I2V_PROMPT_ZH_CHECK（中文逐句核对版）
+  - 逐句翻译英文提示词，句数/顺序/含义完全一致
+
+(4) SELF_CHECK_HINT（一行中文）
+  - 该Shot是否【有口播/无口播】、是否【有商品/无商品】
+```
+
+### 4.3 无口播视频的第三步简化
+
+- 跳过Dialogue和lip-sync相关要求
+- 聚焦视觉节奏、运镜方式、光影变化
+- 每个Shot的(2)中写"No spoken dialogue. Keep motion subtle and editable."
+
+---
+
+## 五、脚本生成规则（基于知识库）
+
+### 5.1 生成流程
+
+```
+用户需求 → 读取爆款脚本知识库_<产品>.md → 选择模板 → 差异化 → 输出脚本
+```
+
+### 5.2 脚本类型
+
+| 类型 | 说明 | 适用场景 |
+|:---|:---|:---|
+| **1:1 复刻** | 严格复用原视频的Shot结构、节奏、视觉风格 | 验证爆款公式可复制性 |
+| **裂变-换产品同结构** | 保留原脚本结构，替换为新产品 | 同品类不同产品快速出片 |
+| **裂变-换钩子** | 保持内容不变，替换开场钩子类型 | A/B测试不同钩子效果 |
+| **裂变-换语气** | 保持内容不变，调整语气风格 | 测试不同人群偏好 |
+| **裂变-缩短版** | 压缩到15-22秒用于广告投放 | GMV Max广告素材 |
+| **裂变-延长版** | 扩展到40-60秒增加产品细节 | 达人合作/深度内容 |
+
+### 5.3 口播时长与分镜时长匹配规则
+
+#### 语速基准（菲律宾语 Tagalog）
+
+| 语气风格 | 语速 | 适用场景 |
+|:---|:---:|:---|
+| 亲切/日常 | **4-5 音节/秒** | 自然流量、达人合作（最通用） |
+| 兴奋/热情 | **5-6 音节/秒** | 短平快广告、促销活动 |
+| 专业/可信 | **3-4 音节/秒** | 教育科普、品牌建设 |
+
+#### 分镜时长计算公式
+
+```
+口播占用时间 = 口播音节数 ÷ 对应语速
+动作/展示/停顿时间 = 分镜总时长 - 口播占用时间
+```
+
+**黄金比例**：每个分镜中，动作/展示/停顿时间应占 **30%-60%**
+
+#### 检查清单
+
+- [ ] 每个分镜的口播是否能在对应语速下自然读完？
+- [ ] 口播读完后的剩余时间是否足够完成画面动作？
+- [ ] 是否有分镜口播太长导致需要赶读？
+- [ ] 是否有分镜口播太短导致需要故意拖慢？
+- [ ] 总口播时长 + 总动作展示时长 ≈ 脚本总时长？
+
+---
+
+## 六、知识沉淀与归档规则
+
+### 6.1 归档流程
+
+```
+0_Inbox/Temp_Transcripts/  ← 原始转录文案（临时）
+    ↓ (分析提取关键信息)
+Layer1_Permanent/05_Campaigns/Viral_Scripts/  ← 爆款脚本分析报告（含完整文案+结构分析）
+    ↓ (沉淀共性规律)
+Layer1_Permanent/06_Operations/爆款脚本知识库_<产品名>.md  ← 可复用的知识库
+    ↓ (生成可执行脚本)
+Layer1_Permanent/05_Campaigns/Scripts/  ← 最终可执行的视频脚本
+```
+
+### 6.2 每次分析脚本后必须执行
+
+| 步骤 | 操作 | 路径 | 说明 |
+| :--- | :--- | :--- | :--- |
+| 1 | 保存分析报告 | `Viral_Scripts/` | 含完整文案+结构分析+标签 |
+| 2 | 更新索引 | `Viral_Scripts/_scripts_index.json` | 自动完成 |
+| 3 | **更新知识库** | `06_Operations/爆款脚本知识库_<产品>.md` | **提取新发现的共性规律** |
+| 4 | 生成可执行脚本 | `05_Campaigns/Scripts/` | 基于知识库生成最终脚本 |
+
+### 6.3 知识库更新规则
+
+- **首次分析**：为该产品创建 `爆款脚本知识库_<产品名>.md`
+- **增量更新**：每分析3个新脚本后，检查是否需要更新知识库
+- **更新内容**：
+  - 新的钩子类型
+  - 新的关键词/卖点
+  - 新的结构模式
+  - 新的语气风格
+  - 新的转化公式
+  - **新的视觉风格/Shot结构模式**（针对无口播视频）
+
+---
+
+## 七、输出位置
+
+| 内容 | 路径 | 说明 |
+| :--- | :--- | :--- |
+| 爆款脚本库（Markdown） | `Layer1_Permanent/05_Campaigns/Viral_Scripts/` | 每个脚本的分析报告 |
+| 脚本库索引（JSON） | `Layer1_Permanent/05_Campaigns/Viral_Scripts/_scripts_index.json` | 自动维护 |
+| **爆款脚本知识库** | `Layer1_Permanent/06_Operations/爆款脚本知识库_<产品>.md` | **可复用的共性规律** |
+| 可执行脚本 | `Layer1_Permanent/05_Campaigns/Scripts/` | 最终拍摄用脚本 |
+| 转录文案 | `0_Inbox/Temp_Transcripts/` | 临时存放 |
+| 复刻/裂变脚本草稿 | `Layer2_Working/` | 临时草稿 |
+| 原始视频 | `0_Inbox/Video_Raw/` | 临时存放 |
+
+---
+
+## 八、注意事项
+
+1. **Whisper 转录**: 如需自动语音转文字，需安装 `pip install faster-whisper`
+2. **无 Whisper 时**: 手动将文案保存到 `0_Inbox/Temp_Transcripts/<视频名>.txt` 即可
+3. **多语言支持**: 自动识别英语、菲律宾语（他加禄语）、中文
+4. **脚本库持久化**: 分析结果自动存入 Layer1 永久记忆，支持随时查看和复用
+5. **知识库是核心资产**: 知识库比单个脚本分析报告更重要，因为它沉淀了可复用的规律
+6. **每分析3个新脚本后**: 主动检查并更新对应产品的知识库
+7. **视频类型分支判断**: 分析前先判断视频是否有口播，选择完整流程或简化流程
+8. **产品材质准确描述**: product_desc必须基于产品实际信息，不得凭视觉猜测材质名称
+
+---
+
+## 九、知识库文件索引
+
+| 产品 | 知识库文件 | 状态 | 最后更新 |
+| :--- | :--- | :--- | :--- |
+| SL07 Citrine Bracelet | `爆款脚本知识库_SL07_Citrine.md` | ✅ 已创建 | 2026-05-26 |

@@ -1,0 +1,225 @@
+{
+  "scripts": [
+    {
+      "script_id": "VS_20260526_113001",
+      "created_at": "2026-05-26T11:30:01.588091",
+      "source_video": "00 (7).mp4",
+      "product_name": "时尚手链",
+      "category": "时尚配件",
+      "analysis": {
+        "basic_info": {
+          "total_words": 46,
+          "estimated_duration_sec": 18,
+          "total_lines": 1,
+          "language": "菲律宾语（他加禄语）"
+        },
+        "hook_analysis": {
+          "text": "Are you tired of your old boring accessories? Look at this amazing new bracelet! Super affordable, o",
+          "type": "问题提问",
+          "all_types": [
+            "问题提问",
+            "数字/数据"
+          ],
+          "length": 268,
+          "is_question": true,
+          "has_emphasis": true
+        },
+        "structure": {
+          "pattern": "对比型",
+          "pattern_confidence": 2,
+          "all_matched_patterns": [
+            "对比型",
+            "限时促销型"
+          ],
+          "timeline": [
+            [
+              "0-3s",
+              "钩子/开场",
+              "Are you tired of your old boring accessories? Look at this amazing new bracelet!"
+            ]
+          ],
+          "has_cta": true,
+          "has_urgency": true
+        },
+        "selling_points": [
+          {
+            "category": "价格优势",
+            "matched_keywords": [
+              "affordable",
+              "sulit"
+            ],
+            "strength": 2
+          },
+          {
+            "category": "质量优势",
+            "matched_keywords": [
+              "quality",
+              "matibay"
+            ],
+            "strength": 2
+          },
+          {
+            "category": "外观优势",
+            "matched_keywords": [
+              "maganda"
+            ],
+            "strength": 1
+          }
+        ],
+        "tone": {
+          "primary_tone": "兴奋/热情",
+          "all_tones": [
+            {
+              "tone": "兴奋/热情",
+              "score": 4
+            },
+            {
+              "tone": "紧迫感",
+              "score": 2
+            }
+          ],
+          "has_urgency": true,
+          "has_social_proof": false
+        },
+        "full_transcript": "Are you tired of your old boring accessories? Look at this amazing new bracelet! Super affordable, only 99 pesos! Ang ganda diba? Perfect for everyday use, maganda sa kamay. Quality you can trust, matibay at sulit. Check link in bio to order now! Limited stock, hurry!"
+      },
+      "tags": [
+        "对比型",
+        "钩子-问题提问",
+        "语气-兴奋/热情",
+        "菲律宾语（他加禄语）",
+        "有CTA",
+        "紧迫感"
+      ],
+      "remix_count": 2,
+      "clone_count": 1
+    },
+    {
+      "script_id": "VS_20260526_120231",
+      "created_at": "2026-05-26T12:02:31.181084",
+      "source_video": "Top03_SL07_Reference.mp4",
+      "product_name": "SL07 Citrine Bracelet",
+      "category": "时尚配件",
+      "analysis": {
+        "basic_info": {
+          "total_words": 375,
+          "estimated_duration_sec": 150,
+          "total_lines": 52,
+          "language": "菲律宾语（他加禄语）"
+        },
+        "hook_analysis": {
+          "text": "Citrine, citrine, another citrine, and another citrine, and another citrine.",
+          "type": "通用开场",
+          "all_types": [],
+          "length": 76,
+          "is_question": false,
+          "has_emphasis": false
+        },
+        "structure": {
+          "pattern": "限时促销型",
+          "pattern_confidence": 2,
+          "all_matched_patterns": [
+            "限时促销型"
+          ],
+          "timeline": [
+            [
+              "0-3s",
+              "钩子/开场",
+              "Citrine, citrine, another citrine, and another citrine, and another citrine."
+            ],
+            [
+              "3-15s",
+              "问题/痛点展示",
+              "Yes, mabilis mo ma-manifest yung desire mo"
+            ],
+            [
+              "15-30s",
+              "产品解决方案",
+              "Right hand naman is for giving"
+            ],
+            [
+              "30-40s+",
+              "行动呼吁(CTA)",
+              "Nasa baba lang po yung link, yung legit na link para maka-avail kayo ng citrine "
+            ]
+          ],
+          "has_cta": true,
+          "has_urgency": true
+        },
+        "selling_points": [
+          {
+            "category": "价格优势",
+            "matched_keywords": [
+              "mura",
+              "affordable",
+              "presyo"
+            ],
+            "strength": 3
+          },
+          {
+            "category": "质量优势",
+            "matched_keywords": [
+              "quality"
+            ],
+            "strength": 1
+          },
+          {
+            "category": "外观优势",
+            "matched_keywords": [
+              "fashion"
+            ],
+            "strength": 1
+          },
+          {
+            "category": "赠品/优惠",
+            "matched_keywords": [
+              "free"
+            ],
+            "strength": 1
+          }
+        ],
+        "tone": {
+          "primary_tone": "亲切/日常",
+          "all_tones": [
+            {
+              "tone": "亲切/日常",
+              "score": 3
+            },
+            {
+              "tone": "紧迫感",
+              "score": 2
+            },
+            {
+              "tone": "兴奋/热情",
+              "score": 1
+            },
+            {
+              "tone": "专业/可信",
+              "score": 1
+            }
+          ],
+          "has_urgency": true,
+          "has_social_proof": false
+        },
+        "full_transcript": "Citrine, citrine, another citrine, and another citrine, and another citrine.\nO, basahin natin yung comment niya.\nEveryday po, suot ko lagi ang citrine bracelet because I'm a year of the tiger.\nKaya it's my lucky charm.\nLagi ko siyang binubulungan bago ko isuot kaya di ako nawawalan ng money.\nSo, bakit po ba ako mahiling mag-collect ng citrine?\nMapa tower citrine man yan, spear citrine, or freeform citrine, any citrine stone, katulad na lang itong bracelet na suot ko.\nKasi ang citrine po, sa mga hindi po nakakaalaman, ang citrine stone po, napakalakas maka-attract niyan ng pera.\nPang pera talaga, pang wealthy citrine.\nLalong-lalo na kung meron kang business or isa kang salesman, lalong-lalo na kung affiliate ka rin dito sa TikTok shop tulad ko,\nKailangan lagi kang may suot na citrine\nKasi mabilis mo ma-attract yung wealth, prosperity, and abundance\nAlso, citrine represents manifestations\nYes, mabilis mo ma-manifest yung desire mo\nPag meron kang suot na citrine\nKung meron kang queen pass, bracelet, or stone\nLagi mo yan dapat\nLagi dapat yan malapit sa'yo\nKahit isearch mo pa yan sa kahit anong search engine\nPag tinight mo yung citrine\nWala ka ibang makita\nKundi puro pang wealth\nAbundance Prosperity\nLagi ko siyang sinusuot sa left hand ko\nKasi ang left hand natin, yung left wrist natin\nIs for receiving\nRight hand naman is for giving\nSo palagi siyang nasa left hand ko\nPalagi akong may citrine\nIto na yung pinakamurang citrine bracelet na nabili ko\nPero again, wala yan sa presyo\nKasi nasa intention nyo pa rin po yan\nMahal man yan or mura\nBasta importante kung ano yung pinaniniwalaan mo\nNabili ko lang ito dito sa TikTok shop\nisa sa mga legit na store sa TikTok shop\npagdating sa mga Lucky Charms.\nCitrine bracelet.\nAng ganda pa ng quality niya\nand very fashionable\nand yet very affordable.\nSa mga naghahanap po ng citrine,\nmga nag-PPM sa akin,\nkung meron daw akong citrine,\nano mararecommend kong citrine,\nI highly recommend this citrine bracelet\nna napaka-mura lang niya\npero ang lakas maka-attract ng\nwealth, prosperity, and abundance.\nO, habang meron pa po kayo nakita\nng yellow basket sa baba,\nNasa baba lang po yung link, yung legit na link para maka-avail kayo ng citrine bracelet.\n"
+      },
+      "tags": [
+        "限时促销型",
+        "钩子-通用开场",
+        "语气-亲切/日常",
+        "菲律宾语（他加禄语）",
+        "有CTA",
+        "紧迫感"
+      ],
+      "remix_count": 1,
+      "clone_count": 1
+    }
+  ],
+  "categories": {
+    "时尚配件": [
+      "VS_20260526_113001",
+      "VS_20260526_120231"
+    ]
+  },
+  "last_update": "2026-05-26T12:02:56.793265"
+}
