@@ -1,0 +1,75 @@
+# ============================================
+# TikTok Shop AI 运营系统 - .gitignore
+# 只追踪核心系统代码/规则/知识库结构
+# 不追踪数据文件、缓存、密钥
+# ============================================
+
+# === 环境变量 & 密钥 ===
+.env
+.env.fastmoss
+
+# === 数据库文件 ===
+*.db
+*.sqlite
+*.sqlite3
+
+# === Excel 原始数据 ===
+*.xlsx
+*.xls
+*.csv
+
+# === 脚本调试产物 ===
+scripts/*.png
+scripts/*.html
+scripts/*.json
+scripts/*.txt
+scripts/*.log
+
+# === 视频 & 音频 ===
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.wav
+*.mp3
+*.m4a
+
+# === Python 缓存 ===
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# === 系统生成文件 ===
+Thumbs.db
+.DS_Store
+*.swp
+*.swo
+*~
+
+# === 临时收件箱（原始数据、视频等） ===
+0_Inbox/*
+
+# === 工作区（临时分析、草稿） ===
+Layer2_Working/运营日志/
+Layer2_Working/*.xlsx
+Layer2_Working/*.csv
+
+# === 店铺原始数据报告（数据量大，非核心） ===
+Layer1_Permanent/01_My_Shop/Reports/
+Layer1_Permanent/01_My_Shop/归档记录_*.md
+
+# === 行业趋势数据（第三方数据） ===
+Layer1_Permanent/04_Industry/*.json
+Layer1_Permanent/04_Industry/*.csv
+
+# === 图片文件 ===
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.ico
+*.svg
